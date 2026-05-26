@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EIFE By Rawthink 🇳🇵 — AI for Every Kid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== CSS VARIABLES & RESET ===== */
+    :root {
+      --bg:        #050b18;
+      --bg2:       #080f22;
+      --cyan:      #00d4ff;
+      --mint:      #00ffaa;
+      --yellow:    #2f75cb;
+      --coral:     #ff6b6b;
+      --purple:    #a855f7;
+      --blue:      #3b82f6;
+      --card-bg:   rgba(255,255,255,0.04);
+      --card-border: rgba(0,212,255,0.18);
+      --text:      #e8f4fd;
+      --text-dim:  #8ab0c8;
+      --radius:    20px;
+      --glow-cyan: 0 0 30px rgba(0,212,255,0.4);
+      --glow-mint: 0 0 30px rgba(0,255,170,0.4);
+      --glow-yellow: 0 0 30px rgba(255,214,10,0.4);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      cursor: none;
+    }
+    h1, h2, h3 { font-family: 'Fredoka One', cursive; }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; }
+
+    /* ===== CUSTOM CURSOR ===== */
+    #cursor-dot {
+      width: 12px; height: 12px;
+      background: var(--cyan);
+      border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: var(--glow-cyan);
+    }
+    #cursor-ring {
+      width: 38px; height: 38px;
+      border: 2px solid rgba(0,212,255,0.55);
+      border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: all 0.12s ease-out;
+    }
+    body:hover #cursor-dot { opacity: 1; }
+
+    /* ===== STARFIELD ===== */
+    #starfield {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: white;
+      animation: twinkle var(--d,3s) ease-in-out infinite alternate;
+    }
+    @keyframes twinkle {
+      from { opacity: var(--oa, 0.2); transform: scale(1); }
+      to   { opacity: var(--ob, 0.8); transform: scale(1.4); }
+    }
+
+    /* ===== NAVBAR ===== */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 40px;
+      background: rgba(5,11,24,0.7);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(0,212,255,0.1);
+      transition: all 0.3s;
+    }
+    nav.scrolled { padding: 10px 40px; background: rgba(5,11,24,0.92); }
+    .nav-logo {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.6rem;
+      background: linear-gradient(90deg, #c8834a, #8b4513);
+      background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+    }
+    .nav-logo span { -webkit-text-fill-color: #d2691e; }
+    .nav-links { display: flex; gap: 8px; align-items: center; }
+    .nav-links a {
+      padding: 8px 16px; border-radius: 50px;
+      font-weight: 700; font-size: 0.85rem; letter-spacing: 0.3px;
+      color: var(--text-dim);
+      transition: all 0.25s;
+      border: 1px solid transparent;
+    }
+    .nav-links a:hover {
+      color: var(--cyan); border-color: rgba(0,212,255,0.35);
+      background: rgba(0,212,255,0.07);
+    }
+    .nav-links a.active { color: var(--cyan); background: rgba(0,212,255,0.1); border-color: rgba(0,212,255,0.3); }
+    .nav-cta {
+      background: linear-gradient(135deg, var(--cyan), var(--purple)) !important;
+      color: white !important; border: none !important;
+      padding: 9px 22px !important;
+      box-shadow: 0 4px 20px rgba(0,212,255,0.3);
+      -webkit-text-fill-color: white !important;
+    }
+    .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,212,255,0.45); }
+
+    /* ===== SECTION NAV DOTS ===== */
+    #section-dots {
+      position: fixed; right: 24px; top: 50%; transform: translateY(-50%);
+      z-index: 900; display: flex; flex-direction: column; gap: 12px;
+    }
+    .dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      border: 2px solid rgba(255,255,255,0.3);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .dot.active { background: var(--cyan); border-color: var(--cyan); box-shadow: var(--glow-cyan); transform: scale(1.4); }
+    .dot:hover { background: var(--cyan); transform: scale(1.2); }
+
+    /* ===== SECTIONS SHARED ===== */
+    section {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      padding: 100px 40px 60px;
+      overflow: hidden;
+    }
+
+    /* ===== SCROLL REVEAL ===== */
+    .reveal {
+      opacity: 0; transform: translateY(50px);
+      transition: all 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left  { opacity: 0; transform: translateX(-60px); transition: all 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .reveal-right { opacity: 0; transform: translateX(60px);  transition: all 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .reveal-left.visible, .reveal-right.visible { opacity: 1; transform: translateX(0); }
+    .reveal-scale { opacity: 0; transform: scale(0.8); transition: all 0.6s cubic-bezier(0.22,1,0.36,1); }
+    .reveal-scale.visible { opacity: 1; transform: scale(1); }
+    [data-delay="1"] { transition-delay: 0.1s !important; }
+    [data-delay="2"] { transition-delay: 0.2s !important; }
+    [data-delay="3"] { transition-delay: 0.3s !important; }
+    [data-delay="4"] { transition-delay: 0.4s !important; }
+    [data-delay="5"] { transition-delay: 0.5s !important; }
+    [data-delay="6"] { transition-delay: 0.6s !important; }
+
+    /* ===== SECTION LABEL ===== */
+    .section-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.78rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+      padding: 6px 16px; border-radius: 50px;
+      background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.25);
+      color: var(--cyan); margin-bottom: 20px;
+    }
+    .section-label.yellow { background: rgba(255,214,10,0.1); border-color: rgba(255,214,10,0.25); color: var(--yellow); }
+    .section-label.mint   { background: rgba(0,255,170,0.1); border-color: rgba(0,255,170,0.25); color: var(--mint); }
+    .section-label.coral  { background: rgba(255,107,107,0.1); border-color: rgba(255,107,107,0.25); color: var(--coral); }
+    .section-label.purple { background: rgba(168,85,247,0.1); border-color: rgba(168,85,247,0.25); color: var(--purple); }
+
+    /* ===== COMMON BUTTON ===== */
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 30px; border-radius: 50px;
+      font-family: 'Fredoka One', cursive; font-size: 1.1rem;
+      cursor: pointer; transition: all 0.3s; border: none; outline: none;
+      position: relative; overflow: hidden;
+    }
+    .btn::after {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(255,255,255,0.12);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .btn:hover::after { opacity: 1; }
+    .btn:hover { transform: translateY(-3px); }
+    .btn:active { transform: translateY(0px) scale(0.97); }
+    .btn-cyan { background: linear-gradient(135deg, var(--cyan), #0096b4); color: #020a14; box-shadow: 0 6px 24px rgba(0,212,255,0.35); }
+    .btn-yellow { background: linear-gradient(135deg, var(--yellow), #e6a000); color: #020a14; box-shadow: 0 6px 24px rgba(255,214,10,0.35); }
+    .btn-mint { background: linear-gradient(135deg, var(--mint), #00b87a); color: #020a14; box-shadow: 0 6px 24px rgba(0,255,170,0.35); }
+    .btn-coral { background: linear-gradient(135deg, var(--coral), #cc3333); color: white; box-shadow: 0 6px 24px rgba(255,107,107,0.35); }
+    .btn-outline {
+      background: transparent; color: var(--cyan);
+      border: 2px solid var(--cyan) !important;
+      box-shadow: 0 0 0 rgba(0,212,255,0);
+    }
+    .btn-outline:hover { box-shadow: 0 0 20px rgba(0,212,255,0.3); }
+
+    /* ===== CARD ===== */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      backdrop-filter: blur(10px);
+      transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+      position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,212,255,0.05), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .card:hover { transform: translateY(-8px); border-color: rgba(0,212,255,0.4); box-shadow: var(--glow-cyan); }
+    .card:hover::before { opacity: 1; }
+
+    /* ===== GRADIENT BLOBS ===== */
+    .blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); pointer-events: none; z-index: 0;
+      opacity: 0.18;
+    }
+
+    /* ============================================================
+       SECTION 1 — HERO / ABOUT US
+    ============================================================ */
+    #hero {
+      text-align: center;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,212,255,0.08) 0%, transparent 70%);
+    }
+    #hero .blob1 { width: 500px; height: 500px; background: var(--cyan); top: -100px; left: -150px; }
+    #hero .blob2 { width: 400px; height: 400px; background: var(--purple); bottom: -50px; right: -100px; }
+    .hero-eyebrow { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 24px; }
+    .flag { font-size: 1.6rem; animation: wave 1.5s ease-in-out infinite; display: inline-block; }
+    @keyframes wave { 0%,100%{transform:rotate(-10deg)} 50%{transform:rotate(10deg)} }
+    .hero-title {
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      line-height: 1.1;
+      background: linear-gradient(135deg, #ffffff 0%, #c8834a 50%, #8b4513 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+    .hero-sub {
+      font-size: clamp(1.6rem, 4vw, 2.8rem);
+      font-family: 'Fredoka One', cursive;
+      color: var(--yellow); margin-bottom: 20px;
+    }
+    .hero-desc {
+      font-size: 1.15rem; color: var(--text-dim); max-width: 620px;
+      line-height: 1.75; margin: 0 auto 40px;
+    }
+    .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .hero-stats {
+      display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
+      margin-top: 60px; padding-top: 40px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-family: 'Fredoka One', cursive; font-size: 2.4rem;
+      background: linear-gradient(90deg, var(--cyan), var(--mint));
+      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .stat-label { font-size: 0.85rem; color: var(--text-dim); font-weight: 700; letter-spacing: 0.5px; }
+
+    /* ===== FLOATING ROBOT (HERO) ===== */
+    .hero-robot-wrap {
+      position: relative; width: 220px; height: 220px;
+      margin: 0 auto 30px;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0px) rotate(-2deg); }
+      50%      { transform: translateY(-18px) rotate(2deg); }
+    }
+    .hero-robot-wrap:hover { animation: bounce-hero 0.5s ease-in-out infinite; }
+    @keyframes bounce-hero {
+      0%,100% { transform: scale(1) rotate(-3deg); }
+      50%      { transform: scale(1.08) rotate(3deg); }
+    }
+
+    /* ============================================================
+       SECTION 2 — COURSE DETAILS
+    ============================================================ */
+    #courses {
+      background: radial-gradient(ellipse 70% 50% at 50% 100%, rgba(168,85,247,0.07) 0%, transparent 70%);
+    }
+    .courses-header { text-align: center; max-width: 700px; margin: 0 auto 60px; }
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 1.15; margin-bottom: 16px;
+    }
+    .section-desc { font-size: 1.05rem; color: var(--text-dim); line-height: 1.7; }
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px; max-width: 1100px; width: 100%;
+    }
+    .course-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 30px 26px;
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+      position: relative; overflow: hidden;
+    }
+    .course-card::before {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: var(--grad-color, linear-gradient(90deg, var(--cyan), var(--mint)));
+      transform: scaleX(0); transition: transform 0.35s;
+    }
+    .course-card:hover { transform: translateY(-10px); box-shadow: 0 20px 50px rgba(0,0,0,0.3); border-color: rgba(0,212,255,0.35); }
+    .course-card:hover::before { transform: scaleX(1); }
+    .course-icon { font-size: 2.8rem; margin-bottom: 16px; display: block; }
+    .course-grade {
+      display: inline-block; font-size: 0.72rem; font-weight: 800;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 50px;
+      background: rgba(0,212,255,0.12); color: var(--cyan);
+      border: 1px solid rgba(0,212,255,0.2); margin-bottom: 12px;
+    }
+    .course-card h3 { font-size: 1.4rem; margin-bottom: 10px; color: white; }
+    .course-card p  { font-size: 0.9rem; color: var(--text-dim); line-height: 1.65; }
+    .course-topics { list-style: none; margin-top: 16px; display: flex; flex-direction: column; gap: 7px; }
+    .course-topics li {
+      display: flex; align-items: center; gap: 9px;
+      font-size: 0.85rem; color: var(--text-dim);
+    }
+    .course-topics li::before { content: '▸'; color: var(--mint); font-size: 0.9rem; }
+
+    /* ============================================================
+       SECTION 3 — LEARN FROM HERE
+    ============================================================ */
+    #learn {
+      background: radial-gradient(ellipse 70% 50% at 0% 50%, rgba(0,255,170,0.06) 0%, transparent 70%);
+    }
+    .learn-wrapper {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; max-width: 1100px; width: 100%; align-items: center;
+    }
+    @media (max-width: 800px) { .learn-wrapper { grid-template-columns: 1fr; } }
+    .learn-text h2 { font-size: clamp(2rem, 4.5vw, 3rem); margin-bottom: 18px; }
+    .learn-text p  { color: var(--text-dim); font-size: 1rem; line-height: 1.75; margin-bottom: 28px; }
+    .learn-modules { display: flex; flex-direction: column; gap: 14px; }
+    .module-item {
+      display: flex; align-items: center; gap: 16px;
+      padding: 16px 20px; border-radius: 14px;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      cursor: pointer; transition: all 0.3s;
+    }
+    .module-item:hover { border-color: rgba(0,212,255,0.5); transform: translateX(8px); box-shadow: var(--glow-cyan); }
+    .module-item.active { border-color: var(--cyan); background: rgba(0,212,255,0.1); }
+    .module-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; flex-shrink: 0;
+    }
+    .module-info h4 { font-family: 'Fredoka One', cursive; font-size: 1.05rem; color: white; }
+    .module-info p  { font-size: 0.82rem; color: var(--text-dim); }
+    .progress-bar { height: 5px; border-radius: 50px; background: rgba(255,255,255,0.08); margin-top: 8px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, var(--cyan), var(--mint)); transition: width 1s ease-out; }
+
+    /* Interactive lesson panel */
+    .lesson-panel {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 24px; padding: 30px; min-height: 420px;
+      display: flex; flex-direction: column; position: relative; overflow: hidden;
+    }
+    .lesson-panel::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 80% at 50% 0%, rgba(0,212,255,0.07), transparent);
+    }
+    .lesson-title { font-family: 'Fredoka One', cursive; font-size: 1.5rem; color: var(--cyan); margin-bottom: 10px; }
+    .lesson-body { color: var(--text-dim); font-size: 0.95rem; line-height: 1.75; flex: 1; }
+    .lesson-quiz { margin-top: 20px; }
+    .quiz-q { font-weight: 800; color: white; margin-bottom: 12px; font-size: 0.95rem; }
+    .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+    .quiz-opt {
+      padding: 10px 16px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      cursor: pointer; font-size: 0.88rem; color: var(--text-dim);
+      transition: all 0.25s;
+    }
+    .quiz-opt:hover { border-color: var(--cyan); color: white; background: rgba(0,212,255,0.1); }
+    .quiz-opt.correct { border-color: var(--mint); background: rgba(0,255,170,0.15); color: var(--mint); }
+    .quiz-opt.wrong   { border-color: var(--coral); background: rgba(255,107,107,0.15); color: var(--coral); }
+
+    /* ============================================================
+       SECTION 4 — ROBOT DANCE
+    ============================================================ */
+    #robot-dance {
+      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(255,214,10,0.05) 0%, transparent 70%);
+      text-align: center;
+    }
+    .dance-title { font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 10px; }
+    .dance-desc  { color: var(--text-dim); font-size: 1.05rem; max-width: 500px; margin: 0 auto 40px; }
+    #robo-stage {
+      position: relative; width: 340px; height: 380px;
+      margin: 0 auto 30px; cursor: pointer;
+    }
+    #robo-stage:hover .robo-svg { filter: drop-shadow(0 0 30px var(--yellow)); }
+    .robo-svg { width: 100%; height: 100%; transition: filter 0.3s; }
+
+    /* Dance keyframes */
+    @keyframes dance1 {
+      0%   { transform: rotate(-12deg) scale(1.05); }
+      25%  { transform: rotate(12deg) scale(0.98) translateY(-10px); }
+      50%  { transform: rotate(-8deg) scale(1.08) translateY(5px); }
+      75%  { transform: rotate(15deg) scale(0.96) translateY(-12px); }
+      100% { transform: rotate(-12deg) scale(1.05); }
+    }
+    @keyframes dance2 {
+      0%   { transform: translateY(0px) rotate(0deg); }
+      20%  { transform: translateY(-20px) rotate(-8deg); }
+      40%  { transform: translateY(0px) rotate(10deg); }
+      60%  { transform: translateY(-15px) rotate(-5deg); }
+      80%  { transform: translateY(5px) rotate(8deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+    @keyframes spin-head { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+    @keyframes arm-wave-left  { 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(-60deg)} }
+    @keyframes arm-wave-right { 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(60deg)} }
+    @keyframes leg-kick { 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(30deg)} }
+    @keyframes bounce-body { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+    #robo-body-group    { transform-origin: 170px 190px; }
+    #robo-head-group    { transform-origin: 170px 100px; }
+    #robo-arm-left      { transform-origin: 95px 185px; }
+    #robo-arm-right     { transform-origin: 245px 185px; }
+    #robo-leg-left      { transform-origin: 140px 290px; }
+    #robo-leg-right     { transform-origin: 200px 290px; }
+
+    .dancing #robo-body-group    { animation: bounce-body 0.4s ease-in-out infinite; }
+    .dancing #robo-head-group    { animation: spin-head 1.2s linear infinite; }
+    .dancing #robo-arm-left      { animation: arm-wave-left  0.4s ease-in-out infinite; }
+    .dancing #robo-arm-right     { animation: arm-wave-right 0.4s ease-in-out infinite; animation-delay: 0.2s; }
+    .dancing #robo-leg-left      { animation: leg-kick 0.4s ease-in-out infinite; }
+    .dancing #robo-leg-right     { animation: leg-kick 0.4s ease-in-out infinite; animation-delay: 0.2s; }
+
+    .dance-btn-row { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+    .disco-lights {
+      position: absolute; inset: 0; border-radius: 50%;
+      pointer-events: none; z-index: -1;
+    }
+    .disco-light {
+      position: absolute; border-radius: 50%;
+      opacity: 0; width: 80px; height: 80px;
+      filter: blur(30px); animation: disco-pop 0.5s ease-out forwards;
+    }
+    @keyframes disco-pop {
+      0%   { opacity: 0.9; transform: scale(0.5); }
+      100% { opacity: 0; transform: scale(2.5); }
+    }
+    .music-note {
+      position: absolute; font-size: 1.6rem;
+      animation: note-fly 1.5s ease-out forwards; pointer-events: none; z-index: 10;
+    }
+    @keyframes note-fly {
+      0%   { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+      100% { opacity: 0; transform: translateY(-120px) scale(1.5) rotate(20deg); }
+    }
+
+    /* ============================================================
+       SECTION 5 — AI FOR ALL
+    ============================================================ */
+    #ai-for-all {
+      background: radial-gradient(ellipse 70% 50% at 100% 50%, rgba(255,107,107,0.06) 0%, transparent 70%);
+    }
+    .afa-wrapper {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; max-width: 1100px; width: 100%; align-items: center;
+    }
+    @media (max-width: 800px) { .afa-wrapper { grid-template-columns: 1fr; } }
+    .afa-text h2 { font-size: clamp(2rem, 4.5vw, 3rem); margin-bottom: 18px; }
+    .afa-text p  { color: var(--text-dim); font-size: 1rem; line-height: 1.75; margin-bottom: 20px; }
+    .afa-pillars { display: flex; flex-direction: column; gap: 14px; }
+    .pillar {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 16px 20px; border-radius: 14px;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      transition: all 0.3s;
+    }
+    .pillar:hover { transform: translateX(8px); border-color: rgba(255,107,107,0.4); }
+    .pillar-icon { font-size: 1.8rem; flex-shrink: 0; margin-top: 2px; }
+    .pillar-text h4 { font-family: 'Fredoka One', cursive; font-size: 1.05rem; color: white; margin-bottom: 4px; }
+    .pillar-text p  { font-size: 0.85rem; color: var(--text-dim); line-height: 1.55; }
+
+    .afa-visual { display: flex; flex-direction: column; gap: 16px; }
+    .nepal-map-wrap {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 24px; padding: 28px; text-align: center; position: relative; overflow: hidden;
+    }
+    .nepal-map-wrap::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(255,107,107,0.05), transparent);
+    }
+    .nepal-map-wrap h3 { font-family: 'Fredoka One', cursive; font-size: 1.2rem; color: var(--coral); margin-bottom: 16px; }
+    .school-dots { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .school-dot {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.78rem; color: var(--text-dim); font-weight: 700;
+      padding: 6px 12px; border-radius: 50px;
+      background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.2);
+    }
+    .school-dot::before { content: '📍'; font-size: 0.9rem; }
+    .counter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .counter-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 16px; padding: 20px; text-align: center;
+      transition: all 0.3s;
+    }
+    .counter-card:hover { border-color: var(--coral); box-shadow: 0 0 20px rgba(255,107,107,0.2); }
+    .counter-num { font-family: 'Fredoka One', cursive; font-size: 2rem; color: var(--coral); }
+    .counter-lbl { font-size: 0.78rem; color: var(--text-dim); font-weight: 700; margin-top: 4px; }
+
+    /* ============================================================
+       SECTION 6 — CERTIFICATION
+    ============================================================ */
+    #certification {
+      background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(168,85,247,0.08) 0%, transparent 70%);
+      text-align: center; padding-bottom: 100px;
+    }
+    .cert-header { max-width: 680px; margin: 0 auto 50px; }
+    .cert-header h2 { font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 16px; }
+    .cert-header p  { color: var(--text-dim); font-size: 1.05rem; line-height: 1.7; }
+
+    /* The actual cert card */
+    .cert-card-wrap {
+      perspective: 1200px; width: 680px; max-width: 95vw;
+      margin: 0 auto 50px; cursor: pointer;
+    }
+    .cert-card {
+      width: 100%; aspect-ratio: 1.5;
+      transform-style: preserve-3d;
+      transition: transform 0.8s cubic-bezier(0.22,1,0.36,1);
+      position: relative; border-radius: 24px;
+    }
+    .cert-card-wrap:hover .cert-card { transform: rotateY(12deg) rotateX(-5deg); }
+    .cert-front {
+      backface-visibility: hidden;
+      border-radius: 24px; overflow: hidden;
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, #0c1a3e 0%, #1a0e3e 40%, #0e1a30 100%);
+      border: 2px solid rgba(168,85,247,0.4);
+      box-shadow: 0 30px 80px rgba(168,85,247,0.2), 0 0 0 1px rgba(168,85,247,0.1);
+      padding: 36px 40px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      position: relative; overflow: hidden;
+    }
+    .cert-front::before {
+      content: ''; position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='1' fill='rgba(168,85,247,0.15)'/%3E%3C/svg%3E");
+      opacity: 0.6;
+    }
+    .cert-corner-glow {
+      position: absolute; border-radius: 50%; filter: blur(50px);
+    }
+    .cert-corner-glow.tl { width: 200px; height: 200px; background: rgba(168,85,247,0.25); top: -60px; left: -60px; }
+    .cert-corner-glow.br { width: 200px; height: 200px; background: rgba(0,212,255,0.18); bottom: -60px; right: -60px; }
+    .cert-logo-row { display: flex; align-items: center; gap: 12px; position: relative; z-index: 1; }
+    .cert-logo-icon { font-size: 2rem; }
+    .cert-logo-text { font-family: 'Fredoka One', cursive; font-size: 1.1rem; background: linear-gradient(90deg, #c8834a, #8b4513); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .cert-badge { position: absolute; top: 24px; right: 30px; z-index: 1; }
+    .cert-badge-circle {
+      width: 60px; height: 60px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--yellow), #e67e00);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(255,214,10,0.4);
+      font-size: 0.5rem; font-weight: 900; color: #020a14; line-height: 1.2; text-align: center;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .cert-center { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 12px 0; }
+    .cert-presents { font-size: 0.75rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
+    .cert-name-line {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      background: linear-gradient(135deg, white, var(--purple));
+      background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+    .cert-course { font-size: 0.85rem; color: var(--cyan); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .cert-bottom { display: flex; justify-content: space-between; align-items: flex-end; position: relative; z-index: 1; }
+    .cert-sig { text-align: left; }
+    .cert-sig-line { width: 100px; height: 1px; background: rgba(255,255,255,0.3); margin-bottom: 4px; }
+    .cert-sig-label { font-size: 0.72rem; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; }
+    .cert-seal { font-size: 2.5rem; }
+    .cert-border-decoration {
+      position: absolute; inset: 6px; border: 1px solid rgba(168,85,247,0.25);
+      border-radius: 20px; pointer-events: none; z-index: 1;
+    }
+    .cert-ribbon {
+      position: absolute; top: 0; left: 30px;
+      width: 40px; height: 50px;
+      background: linear-gradient(135deg, var(--purple), #6d28d9);
+      clip-path: polygon(0 0, 100% 0, 100% 80%, 50% 100%, 0 80%);
+      z-index: 2;
+    }
+    .cert-ribbon::after { content: '★'; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: white; font-size: 1rem; }
+
+    /* Steps */
+    .cert-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 900px; margin: 0 auto 50px; width: 100%; }
+    .step-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 18px; padding: 24px 20px; text-align: center;
+      transition: all 0.35s;
+    }
+    .step-card:hover { transform: translateY(-8px); border-color: rgba(168,85,247,0.45); box-shadow: 0 20px 40px rgba(168,85,247,0.15); }
+    .step-num {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple), var(--blue));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Fredoka One', cursive; font-size: 1.3rem; color: white;
+      margin: 0 auto 14px; box-shadow: 0 4px 20px rgba(168,85,247,0.3);
+    }
+    .step-card h4 { font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: white; margin-bottom: 8px; }
+    .step-card p  { font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      position: relative; z-index: 1;
+      text-align: center; padding: 40px 40px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      color: var(--text-dim); font-size: 0.88rem;
+    }
+    footer strong { color: #c8834a; font-family: 'Fredoka One', cursive; font-size: 1rem; }
+    .footer-links { display: flex; gap: 20px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+    .footer-links a { color: var(--text-dim); font-size: 0.82rem; font-weight: 700; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--cyan); }
+
+    /* ===== SCROLL PROGRESS ===== */
+    #scroll-progress {
+      position: fixed; top: 0; left: 0; height: 3px; z-index: 1100;
+      background: linear-gradient(90deg, var(--cyan), var(--mint), var(--yellow));
+      transition: width 0.1s;
+    }
+
+    /* ===== TOAST ===== */
+    #toast {
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: rgba(10,20,40,0.95); border: 1px solid var(--cyan);
+      color: white; font-family: 'Fredoka One', cursive; font-size: 1rem;
+      padding: 14px 28px; border-radius: 50px;
+      box-shadow: var(--glow-cyan); z-index: 9999;
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.4s;
+      opacity: 0; pointer-events: none;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      nav { padding: 12px 20px; }
+      .nav-links { display: none; }
+      section { padding: 80px 20px 50px; }
+      #section-dots { right: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== CURSOR ===== -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- ===== SCROLL PROGRESS ===== -->
+<div id="scroll-progress"></div>
+
+<!-- ===== STARFIELD ===== -->
+<div id="starfield"></div>
+
+<!-- ===== TOAST ===== -->
+<div id="toast">🎉 Awesome! Keep exploring!</div>
+
+<!-- ===== NAVBAR ===== -->
+<nav id="navbar">
+  <div class="nav-logo">EIFE By <span>Rawthink</span></div>
+  <div class="nav-links">
+    <a href="#hero"          class="active">About Us</a>
+    <a href="#courses">       Courses</a>
+    <a href="#learn">         Learn</a>
+    <a href="#robot-dance">   Robot</a>
+    <a href="#ai-for-all">    AI for All</a>
+    <a href="#certification" class="nav-cta btn">Get Certified ✨</a>
+  </div>
+</nav>
+
+<!-- ===== SECTION DOTS ===== -->
+<div id="section-dots">
+  <div class="dot active" data-target="hero"         title="About Us"></div>
+  <div class="dot"        data-target="courses"      title="Courses"></div>
+  <div class="dot"        data-target="learn"        title="Learn"></div>
+  <div class="dot"        data-target="robot-dance"  title="Robot Dance"></div>
+  <div class="dot"        data-target="ai-for-all"   title="AI for All"></div>
+  <div class="dot"        data-target="certification" title="Certification"></div>
+</div>
+
+<!-- ==============================================================
+     SECTION 1 — HERO / ABOUT US
+============================================================== -->
+<section id="hero">
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+
+  <div class="hero-robot-wrap reveal" id="hero-robot">
+    <svg class="robo-svg" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Glow -->
+      <circle cx="110" cy="160" r="60" fill="rgba(0,212,255,0.06)"/>
+      <!-- Body -->
+      <rect x="55" y="100" width="110" height="80" rx="22" fill="#0f2040" stroke="#00d4ff" stroke-width="2"/>
+      <!-- Chest glow -->
+      <rect x="73" y="118" width="74" height="44" rx="10" fill="rgba(0,212,255,0.08)" stroke="rgba(0,212,255,0.3)" stroke-width="1.5"/>
+      <!-- Panel lights -->
+      <circle cx="90"  cy="134" r="6" fill="#00ffaa"/>
+      <circle cx="110" cy="134" r="6" fill="#ffd60a"/>
+      <circle cx="130" cy="134" r="6" fill="#ff6b6b"/>
+      <rect x="82" y="150" width="56" height="6" rx="3" fill="rgba(0,212,255,0.3)"/>
+      <!-- Head -->
+      <rect x="65" y="38" width="90" height="66" rx="20" fill="#0c1a34" stroke="#00d4ff" stroke-width="2"/>
+      <!-- Eyes -->
+      <ellipse cx="93"  cy="68" rx="14" ry="14" fill="#001830"/>
+      <ellipse cx="127" cy="68" rx="14" ry="14" fill="#001830"/>
+      <ellipse cx="93"  cy="68" rx="9" ry="9" fill="#00d4ff"/>
+      <ellipse cx="127" cy="68" rx="9" ry="9" fill="#00d4ff"/>
+      <ellipse cx="93"  cy="68" rx="4" ry="4" fill="white"/>
+      <ellipse cx="127" cy="68" rx="4" ry="4" fill="white"/>
+      <ellipse cx="95"  cy="66" rx="2" ry="2" fill="#00ffaa"/>
+      <ellipse cx="129" cy="66" rx="2" ry="2" fill="#00ffaa"/>
+      <!-- Antenna -->
+      <line x1="110" y1="38" x2="110" y2="18" stroke="#00d4ff" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="110" cy="12" r="7" fill="#ffd60a" stroke="#e6a000" stroke-width="1.5"/>
+      <!-- Mouth -->
+      <rect x="85" y="90" width="50" height="9" rx="4.5" fill="rgba(0,212,255,0.2)" stroke="rgba(0,212,255,0.5)" stroke-width="1"/>
+      <rect x="89" y="92" width="12" height="5" rx="2.5" fill="#00d4ff"/>
+      <rect x="104" y="92" width="12" height="5" rx="2.5" fill="#00ffaa"/>
+      <rect x="119" y="92" width="12" height="5" rx="2.5" fill="#ffd60a"/>
+      <!-- Arms -->
+      <rect x="20" y="108" width="36" height="16" rx="8" fill="#0f2040" stroke="#00d4ff" stroke-width="1.5"/>
+      <circle cx="20" cy="116" r="8" fill="#0f2040" stroke="#00d4ff" stroke-width="1.5"/>
+      <rect x="164" y="108" width="36" height="16" rx="8" fill="#0f2040" stroke="#00d4ff" stroke-width="1.5"/>
+      <circle cx="200" cy="116" r="8" fill="#0f2040" stroke="#00d4ff" stroke-width="1.5"/>
+      <!-- Legs -->
+      <rect x="73" y="178" width="26" height="36" rx="10" fill="#0c1a34" stroke="#00d4ff" stroke-width="1.5"/>
+      <rect x="121" y="178" width="26" height="36" rx="10" fill="#0c1a34" stroke="#00d4ff" stroke-width="1.5"/>
+      <rect x="70" y="208" width="32" height="12" rx="6" fill="#00d4ff"/>
+      <rect x="118" y="208" width="32" height="12" rx="6" fill="#00d4ff"/>
+    </svg>
+  </div>
+
+  <div class="hero-eyebrow reveal" data-delay="1">
+    <span class="flag">🇳🇵</span>
+    <span class="section-label">Nepal's First AI School Program</span>
+    <span class="flag">🤖</span>
+  </div>
+
+  <h1 class="hero-title reveal" data-delay="2">
+    EIFE By Rawthink
+  </h1>
+  <div class="hero-sub reveal" data-delay="3">Teaching AI. Building Tomorrow.</div>
+  <p class="hero-desc reveal" data-delay="4">
+    We are bringing the magic of Artificial Intelligence into classrooms across Nepal —
+    starting with Grades 5 to 8. No coding experience needed. Just curiosity and a big smile! 🌟
+  </p>
+  <div class="hero-btns reveal" data-delay="5">
+    <a href="#courses" class="btn btn-cyan">🚀 See the Courses</a>
+    <a href="#learn"   class="btn btn-outline btn">📚 Start Learning</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat reveal-scale" data-delay="1">
+      <div class="stat-num" data-count="50">0</div>
+      <div class="stat-label">Schools Target</div>
+    </div>
+    <div class="stat reveal-scale" data-delay="2">
+      <div class="stat-num" data-count="5000">0</div>
+      <div class="stat-label">Students Goal</div>
+    </div>
+    <div class="stat reveal-scale" data-delay="3">
+      <div class="stat-num" data-count="4">0</div>
+      <div class="stat-label">Grades (5–8)</div>
+    </div>
+    <div class="stat reveal-scale" data-delay="4">
+      <div class="stat-num" data-count="100">0</div>
+      <div class="stat-label">% Free</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==============================================================
+     SECTION 2 — COURSE DETAILS
+============================================================== -->
+<section id="courses">
+  <div class="courses-header">
+    <div class="section-label yellow reveal">📖 Section 1 — Course Details</div>
+    <h2 class="section-title reveal" data-delay="1">
+      What Will <span style="color:var(--yellow)">Students Learn?</span>
+    </h2>
+    <p class="section-desc reveal" data-delay="2">
+      Our curriculum is designed in simple, fun, hands-on lessons so every student in Nepal
+      can understand how AI works — and why it matters for their future.
+    </p>
+  </div>
+
+  <div class="courses-grid">
+    <!-- Grade 5 -->
+    <div class="course-card reveal" data-delay="1" style="--grad-color: linear-gradient(90deg,#00d4ff,#00ffaa)">
+      <span class="course-icon">🌱</span>
+      <span class="course-grade">Grade 5</span>
+      <h3>AI Basics & Robots</h3>
+      <p>Introduce students to what AI is, how robots work, and fun hands-on activities with basic problem-solving.</p>
+      <ul class="course-topics">
+        <li>What is Artificial Intelligence?</li>
+        <li>How do robots move &amp; think?</li>
+        <li>Games &amp; puzzles with patterns</li>
+        <li>Simple sorting &amp; logic activities</li>
+      </ul>
+    </div>
+    <!-- Grade 6 -->
+    <div class="course-card reveal" data-delay="2" style="--grad-color: linear-gradient(90deg,#a855f7,#3b82f6)">
+      <span class="course-icon">🤔</span>
+      <span class="course-grade" style="color:var(--purple);background:rgba(168,85,247,0.1);border-color:rgba(168,85,247,0.2)">Grade 6</span>
+      <h3>How Computers Think</h3>
+      <p>Discover how computers recognize faces, understand speech, and recommend your favourite videos on YouTube!</p>
+      <ul class="course-topics">
+        <li>Machine Learning basics</li>
+        <li>Image &amp; voice recognition</li>
+        <li>Recommendation systems</li>
+        <li>Training your first simple model</li>
+      </ul>
+    </div>
+    <!-- Grade 7 -->
+    <div class="course-card reveal" data-delay="3" style="--grad-color: linear-gradient(90deg,#ffd60a,#ff6b6b)">
+      <span class="course-icon">💡</span>
+      <span class="course-grade" style="color:var(--yellow);background:rgba(255,214,10,0.1);border-color:rgba(255,214,10,0.2)">Grade 7</span>
+      <h3>AI in Our World</h3>
+      <p>See how AI is already changing healthcare, farming, education, and daily life in Nepal and around the world.</p>
+      <ul class="course-topics">
+        <li>AI in healthcare &amp; agriculture</li>
+        <li>AI safety &amp; ethics</li>
+        <li>Environmental &amp; climate AI</li>
+        <li>AI tools for everyday life</li>
+      </ul>
+    </div>
+    <!-- Grade 8 -->
+    <div class="course-card reveal" data-delay="4" style="--grad-color: linear-gradient(90deg,#00ffaa,#a855f7)">
+      <span class="course-icon">🚀</span>
+      <span class="course-grade" style="color:var(--mint);background:rgba(0,255,170,0.1);border-color:rgba(0,255,170,0.2)">Grade 8</span>
+      <h3>Build With AI</h3>
+      <p>Students create their very own AI-powered mini projects — no prior coding needed. Pure creativity and problem solving!</p>
+      <ul class="course-topics">
+        <li>Design thinking with AI</li>
+        <li>Prompt engineering basics</li>
+        <li>Build a chatbot or image detector</li>
+        <li>Present your AI project</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top:50px" class="reveal" data-delay="5">
+    <a href="#learn" class="btn btn-yellow">📚 Start Learning Now →</a>
+  </div>
+</section>
+
+<!-- ==============================================================
+     SECTION 3 — LEARN FROM HERE
+============================================================== -->
+<section id="learn">
+  <div class="learn-wrapper">
+    <div class="learn-text">
+      <div class="section-label mint reveal">🎓 Section 2 — Learn From Here</div>
+      <h2 class="reveal" data-delay="1">
+        Learn AI,<br/><span style="color:var(--mint)">Right Here.</span><br/>Right Now! ⚡
+      </h2>
+      <p class="reveal" data-delay="2">
+        Click on any module below and start an interactive mini-lesson.
+        Answer a quick quiz and unlock a badge! 🏅
+      </p>
+      <div class="learn-modules reveal" data-delay="3">
+        <div class="module-item active" onclick="loadLesson(0)">
+          <div class="module-icon" style="background:rgba(0,212,255,0.15)">🧠</div>
+          <div class="module-info">
+            <h4>What is AI?</h4>
+            <p>5 min · Grade 5+</p>
+            <div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
+          </div>
+        </div>
+        <div class="module-item" onclick="loadLesson(1)">
+          <div class="module-icon" style="background:rgba(168,85,247,0.15)">🤖</div>
+          <div class="module-info">
+            <h4>How Robots Learn</h4>
+            <p>7 min · Grade 6+</p>
+            <div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div>
+          </div>
+        </div>
+        <div class="module-item" onclick="loadLesson(2)">
+          <div class="module-icon" style="background:rgba(255,214,10,0.15)">🌾</div>
+          <div class="module-info">
+            <h4>AI for Nepali Farmers</h4>
+            <p>6 min · Grade 7+</p>
+            <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+          </div>
+        </div>
+        <div class="module-item" onclick="loadLesson(3)">
+          <div class="module-icon" style="background:rgba(0,255,170,0.15)">🎨</div>
+          <div class="module-info">
+            <h4>Create with AI</h4>
+            <p>8 min · Grade 8+</p>
+            <div class="progress-bar"><div class="progress-fill" style="width:5%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-panel reveal-right" data-delay="2" id="lesson-panel">
+      <div class="lesson-title" id="lesson-title">🧠 What is AI?</div>
+      <div class="lesson-body" id="lesson-body">
+        Artificial Intelligence — or AI — is when computers are taught to think and learn like humans! 🤯<br/><br/>
+        Just like how you learn to recognise a cat 🐱 by seeing many cats, AI learns by looking at thousands and thousands of examples.<br/><br/>
+        AI is already all around you — in your phone's face unlock, in YouTube recommendations, and even in Nepali hospitals helping doctors! 🏥<br/><br/>
+        <strong style="color:var(--cyan)">Fun Fact:</strong> The word "Artificial" means "made by humans", and "Intelligence" means "the ability to learn and solve problems." Together = AI! 🚀
+      </div>
+      <div class="lesson-quiz" id="lesson-quiz">
+        <div class="quiz-q">Quick Quiz 🎯 — What does AI stand for?</div>
+        <div class="quiz-options" id="quiz-options">
+          <div class="quiz-opt" onclick="checkAnswer(this, false)">🤔 Automatic Internet</div>
+          <div class="quiz-opt" onclick="checkAnswer(this, true)">✅ Artificial Intelligence</div>
+          <div class="quiz-opt" onclick="checkAnswer(this, false)">🤷 Amazing Invention</div>
+          <div class="quiz-opt" onclick="checkAnswer(this, false)">💡 Advanced Information</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==============================================================
+     SECTION 4 — ROBOT DANCE
+============================================================== -->
+<section id="robot-dance">
+  <div class="section-label coral reveal">🕺 Section 3 — Interactive Robot</div>
+  <h2 class="dance-title reveal" data-delay="1">
+    Make <span style="color:var(--yellow)">ROBO</span> Dance! 🎵
+  </h2>
+  <p class="dance-desc reveal" data-delay="2">
+    Click the robot, press the buttons, or just hover around and watch ROBO react! 
+    He loves music and your mouse cursor! 🎶
+  </p>
+
+  <div id="robo-stage" class="reveal-scale" data-delay="3" onclick="toggleDance()">
+    <div id="disco-lights" class="disco-lights"></div>
+    <svg class="robo-svg" id="robo-svg" viewBox="0 0 340 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Shadow -->
+      <ellipse cx="170" cy="360" rx="75" ry="14" fill="rgba(0,212,255,0.12)"/>
+
+      <g id="robo-body-group">
+        <!-- Legs -->
+        <g id="robo-leg-left">
+          <rect x="108" y="280" width="44" height="70" rx="16" fill="#0c1a34" stroke="#00d4ff" stroke-width="2"/>
+          <rect x="103" y="340" width="54" height="18" rx="9" fill="#00d4ff" opacity="0.9"/>
+        </g>
+        <g id="robo-leg-right">
+          <rect x="188" y="280" width="44" height="70" rx="16" fill="#0c1a34" stroke="#00d4ff" stroke-width="2"/>
+          <rect x="183" y="340" width="54" height="18" rx="9" fill="#00d4ff" opacity="0.9"/>
+        </g>
+
+        <!-- Body -->
+        <rect x="78" y="155" width="184" height="132" rx="28" fill="#0f2040" stroke="#00d4ff" stroke-width="2.5"/>
+        <!-- Chest panel -->
+        <rect x="98" y="174" width="144" height="92" rx="14" fill="rgba(0,212,255,0.07)" stroke="rgba(0,212,255,0.25)" stroke-width="1.5"/>
+        <!-- Panel lights -->
+        <circle cx="128" cy="206" r="11" fill="#00ffaa" id="chest-light-1"/>
+        <circle cx="170" cy="206" r="11" fill="#ffd60a" id="chest-light-2"/>
+        <circle cx="212" cy="206" r="11" fill="#ff6b6b" id="chest-light-3"/>
+        <!-- Progress bars -->
+        <rect x="104" y="232" width="132" height="10" rx="5" fill="rgba(0,212,255,0.15)"/>
+        <rect x="104" y="232" width="88"  height="10" rx="5" fill="#00d4ff" id="chest-bar"/>
+        <rect x="104" y="248" width="132" height="10" rx="5" fill="rgba(168,85,247,0.15)"/>
+        <rect x="104" y="248" width="110" height="10" rx="5" fill="#a855f7"/>
+
+        <!-- Arms -->
+        <g id="robo-arm-left">
+          <rect x="28"  y="160" width="52" height="22" rx="11" fill="#0f2040" stroke="#00d4ff" stroke-width="2"/>
+          <circle cx="28" cy="171" r="14" fill="#0c1a34" stroke="#00d4ff" stroke-width="2"/>
+          <circle cx="28" cy="171" r="6" fill="#00d4ff" opacity="0.6"/>
+        </g>
+        <g id="robo-arm-right">
+          <rect x="260" y="160" width="52" height="22" rx="11" fill="#0f2040" stroke="#00d4ff" stroke-width="2"/>
+          <circle cx="312" cy="171" r="14" fill="#0c1a34" stroke="#00d4ff" stroke-width="2"/>
+          <circle cx="312" cy="171" r="6" fill="#00d4ff" opacity="0.6"/>
+        </g>
+      </g>
+
+      <!-- Head (separate for spin animation) -->
+      <g id="robo-head-group">
+        <!-- Neck -->
+        <rect x="150" y="138" width="40" height="24" rx="8" fill="#0c1a34" stroke="#00d4ff" stroke-width="1.5"/>
+        <!-- Head -->
+        <rect x="84"  y="60"  width="172" height="120" rx="28" fill="#0c1a34" stroke="#00d4ff" stroke-width="2.5"/>
+        <!-- Eyes -->
+        <ellipse cx="135" cy="110" rx="22" ry="22" fill="#001830"/>
+        <ellipse cx="205" cy="110" rx="22" ry="22" fill="#001830"/>
+        <ellipse cx="135" cy="110" rx="15" ry="15" fill="#00d4ff" id="eye-l"/>
+        <ellipse cx="205" cy="110" rx="15" ry="15" fill="#00d4ff" id="eye-r"/>
+        <ellipse cx="135" cy="110" rx="7"  ry="7"  fill="white"/>
+        <ellipse cx="205" cy="110" rx="7"  ry="7"  fill="white"/>
+        <ellipse cx="138" cy="107" rx="3"  ry="3"  fill="#00ffaa"/>
+        <ellipse cx="208" cy="107" rx="3"  ry="3"  fill="#00ffaa"/>
+        <!-- Eyebrows -->
+        <rect x="118" y="84"  width="34" height="8" rx="4" fill="rgba(0,212,255,0.35)" id="brow-l"/>
+        <rect x="188" y="84"  width="34" height="8" rx="4" fill="rgba(0,212,255,0.35)" id="brow-r"/>
+        <!-- Antenna -->
+        <line x1="170" y1="60" x2="170" y2="28" stroke="#00d4ff" stroke-width="3.5" stroke-linecap="round"/>
+        <circle cx="170" cy="18" r="13" fill="#ffd60a" stroke="#e6a000" stroke-width="2"/>
+        <circle cx="170" cy="18" r="6"  fill="white" id="antenna-dot"/>
+        <!-- Mouth area -->
+        <rect x="118" y="140" width="104" height="24" rx="12" fill="rgba(0,212,255,0.15)" stroke="rgba(0,212,255,0.4)" stroke-width="1.5"/>
+        <rect x="126" y="145" width="22" height="14" rx="7" fill="#00d4ff" id="mouth-1"/>
+        <rect x="152" y="145" width="22" height="14" rx="7" fill="#ffd60a" id="mouth-2"/>
+        <rect x="178" y="145" width="22" height="14" rx="7" fill="#00ffaa" id="mouth-3"/>
+        <rect x="204" y="145" width="10" height="14" rx="5" fill="#a855f7" id="mouth-4"/>
+        <!-- Cheek glow -->
+        <circle cx="95"  cy="118" r="12" fill="rgba(255,107,107,0.25)"/>
+        <circle cx="245" cy="118" r="12" fill="rgba(255,107,107,0.25)"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="dance-btn-row reveal" data-delay="4">
+    <button class="btn btn-yellow" onclick="toggleDance()">🎵 Dance!</button>
+    <button class="btn btn-cyan"   onclick="changeColor()">🌈 Change Color</button>
+    <button class="btn btn-mint"   onclick="doWave()">👋 Wave Hi!</button>
+    <button class="btn btn-coral"  onclick="doSpin()">💫 Spin!</button>
+  </div>
+
+  <p style="color:var(--text-dim);font-size:0.85rem;margin-top:20px" class="reveal" data-delay="5">
+    💡 Tip: Move your mouse over ROBO — his eyes follow you!
+  </p>
+</section>
+
+<!-- ==============================================================
+     SECTION 5 — AI FOR ALL
+============================================================== -->
+<section id="ai-for-all">
+  <div class="afa-wrapper">
+    <div class="afa-text">
+      <div class="section-label coral reveal">🌍 Section 4 — AI for All</div>
+      <h2 class="reveal" data-delay="1">
+        AI is for <span style="color:var(--coral)">Every Child</span><br/>in Nepal 🇳🇵
+      </h2>
+      <p class="reveal" data-delay="2">
+        We believe no child should be left behind in the AI revolution. Whether you're from
+        Kathmandu, Pokhara, or a small village in the Himalayas — EIFE By Rawthink comes to you.
+      </p>
+      <div class="afa-pillars reveal" data-delay="3">
+        <div class="pillar">
+          <span class="pillar-icon">🆓</span>
+          <div class="pillar-text">
+            <h4>Completely Free</h4>
+            <p>All lessons, certificates, and materials are 100% free for every student in Nepal.</p>
+          </div>
+        </div>
+        <div class="pillar">
+          <span class="pillar-icon">🗣️</span>
+          <div class="pillar-text">
+            <h4>In Nepali &amp; English</h4>
+            <p>Content delivered in both languages so no child feels left out or confused.</p>
+          </div>
+        </div>
+        <div class="pillar">
+          <span class="pillar-icon">📱</span>
+          <div class="pillar-text">
+            <h4>Works on Any Device</h4>
+            <p>From a smartphone to a basic laptop — EIFE By Rawthink works everywhere.</p>
+          </div>
+        </div>
+        <div class="pillar">
+          <span class="pillar-icon">👩‍🏫</span>
+          <div class="pillar-text">
+            <h4>Teacher Friendly</h4>
+            <p>Easy-to-use lesson plans provided to every teacher. No tech expertise needed!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="afa-visual reveal-right" data-delay="2">
+      <div class="nepal-map-wrap">
+        <h3>📍 Schools We're Visiting</h3>
+        <div class="school-dots" id="school-dots">
+          <div class="school-dot">Kathmandu</div>
+          <div class="school-dot">Pokhara</div>
+          <div class="school-dot">Lalitpur</div>
+          <div class="school-dot">Bhaktapur</div>
+          <div class="school-dot">Biratnagar</div>
+          <div class="school-dot">Hetauda</div>
+          <div class="school-dot">Dharan</div>
+          <div class="school-dot">Chitwan</div>
+          <div class="school-dot">Butwal</div>
+          <div class="school-dot">Janakpur</div>
+        </div>
+        <p style="margin-top:18px;font-size:0.82rem;color:var(--text-dim)">
+          Starting <strong style="color:var(--coral)">Next Week</strong> — more schools added every month!
+        </p>
+      </div>
+      <div class="counter-grid">
+        <div class="counter-card">
+          <div class="counter-num" data-count="50" data-suffix="+">0</div>
+          <div class="counter-lbl">Schools</div>
+        </div>
+        <div class="counter-card">
+          <div class="counter-num" data-count="5000" data-suffix="+">0</div>
+          <div class="counter-lbl">Students</div>
+        </div>
+        <div class="counter-card">
+          <div class="counter-num" data-count="4" data-suffix="">0</div>
+          <div class="counter-lbl">Grade Levels</div>
+        </div>
+        <div class="counter-card">
+          <div class="counter-num" data-count="77" data-suffix="">0</div>
+          <div class="counter-lbl">Districts Goal</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==============================================================
+     SECTION 6 — CERTIFICATION
+============================================================== -->
+<section id="certification">
+  <div class="cert-header">
+    <div class="section-label purple reveal">🏆 Section 5 — Certification</div>
+    <h2 class="reveal" data-delay="1">
+      Earn Your <span style="color:var(--purple)">AI Certificate</span> 🎓
+    </h2>
+    <p class="reveal" data-delay="2">
+      Complete all lessons, pass the quiz, and earn an official EIFE By Rawthink Certificate!
+      Show the world you are an AI Explorer from Nepal! 🇳🇵✨
+    </p>
+  </div>
+
+  <!-- 3D Certificate Card -->
+  <div class="cert-card-wrap reveal-scale" data-delay="3">
+    <div class="cert-card">
+      <div class="cert-front">
+        <div class="cert-corner-glow tl"></div>
+        <div class="cert-corner-glow br"></div>
+        <div class="cert-ribbon"></div>
+        <div class="cert-border-decoration"></div>
+
+        <div class="cert-logo-row">
+          <span class="cert-logo-icon">🤖</span>
+          <span class="cert-logo-text">EIFE By Rawthink</span>
+        </div>
+        <div class="cert-badge">
+          <div class="cert-badge-circle">
+            VERIFIED<br/>CERT
+          </div>
+        </div>
+
+        <div class="cert-center">
+          <div class="cert-presents">This certifies that</div>
+          <div class="cert-name-line">[ Your Name Here ]</div>
+          <div class="cert-course">🏅 AI Explorer — Grades 5–8 Program</div>
+          <div style="font-size:0.8rem;color:var(--text-dim);margin-top:8px">
+            has successfully completed the EIFE By Rawthink curriculum<br/>and demonstrated outstanding curiosity in Artificial Intelligence.
+          </div>
+        </div>
+
+        <div class="cert-bottom">
+          <div class="cert-sig">
+            <div class="cert-sig-line"></div>
+            <div class="cert-sig-label">Program Director</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:0.72rem;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Issued by</div>
+            <div style="font-family:'Fredoka One',cursive;font-size:0.95rem;color:#c8834a">EIFE By Rawthink 🇳🇵</div>
+          </div>
+          <div class="cert-seal">🏆</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p style="font-size:0.82rem;color:var(--text-dim);margin-top:-30px;margin-bottom:50px" class="reveal">
+    👆 Hover over the certificate to see it in 3D!
+  </p>
+
+  <!-- How to get certified -->
+  <h3 class="reveal" style="font-size:1.8rem;margin-bottom:30px">
+    How to Get Certified? 🗺️
+  </h3>
+  <div class="cert-steps">
+    <div class="step-card reveal" data-delay="1">
+      <div class="step-num">1</div>
+      <h4>Join a Session</h4>
+      <p>Visit your school's EIFE By Rawthink class or go to our website and start the free online lessons.</p>
+    </div>
+    <div class="step-card reveal" data-delay="2">
+      <div class="step-num">2</div>
+      <h4>Complete Modules</h4>
+      <p>Finish all 4 interactive lesson modules. Each one is fun, short, and packed with surprises!</p>
+    </div>
+    <div class="step-card reveal" data-delay="3">
+      <div class="step-num">3</div>
+      <h4>Pass the Quiz</h4>
+      <p>Answer the final quiz with at least 70% correct. You can try as many times as you need!</p>
+    </div>
+    <div class="step-card reveal" data-delay="4">
+      <div class="step-num">4</div>
+      <h4>Download &amp; Share</h4>
+      <p>Download your official certificate, print it, and share it with family and friends! 🎉</p>
+    </div>
+  </div>
+
+  <div class="reveal" data-delay="5" style="margin-top:20px">
+    <button class="btn btn-yellow" style="font-size:1.2rem;padding:16px 40px" onclick="showToast('🎓 Certificate program coming next week! Stay tuned!')">
+      🏆 Get My Certificate!
+    </button>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <strong>EIFE By Rawthink 🇳🇵🤖</strong>
+  <p style="margin-top:8px">Making Artificial Intelligence accessible to every child in Nepal • Starting Grades 5–8</p>
+  <div class="footer-links">
+    <a href="#hero">About Us</a>
+    <a href="#courses">Courses</a>
+    <a href="#learn">Learn</a>
+    <a href="#robot-dance">Robot</a>
+    <a href="#ai-for-all">AI for All</a>
+    <a href="#certification">Certification</a>
+  </div>
+  <p style="margin-top:16px;font-size:0.78rem;color:rgba(255,255,255,0.2)">
+    Built with ❤️ for Nepali students · © 2025 EIFE By Rawthink
+  </p>
+</footer>
+
+<!-- ==============================================================
+     JAVASCRIPT
+============================================================== -->
+<script>
+/* ===== STARFIELD ===== */
+(function(){
+  const sf = document.getElementById('starfield');
+  for(let i=0;i<200;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random()*3+1;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      top:${Math.random()*100}%; left:${Math.random()*100}%;
+      --d:${2+Math.random()*4}s;
+      --oa:${0.1+Math.random()*0.3};
+      --ob:${0.5+Math.random()*0.5};
+      animation-delay:${Math.random()*5}s;
+    `;
+    sf.appendChild(s);
+  }
+})();
+
+/* ===== CUSTOM CURSOR ===== */
+const dot  = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let mx=0,my=0, rx=0,ry=0;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+(function loop(){
+  rx += (mx-rx)*0.18; ry += (my-ry)*0.18;
+  dot.style.left  = mx+'px'; dot.style.top  = my+'px';
+  ring.style.left = rx+'px'; ring.style.top = ry+'px';
+  requestAnimationFrame(loop);
+})();
+document.querySelectorAll('a,button,.btn,.card,.course-card,.module-item,.quiz-opt,.dot,.cert-card-wrap').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ dot.style.transform='translate(-50%,-50%) scale(2)'; ring.style.transform='translate(-50%,-50%) scale(1.5)'; dot.style.background='var(--yellow)'; });
+  el.addEventListener('mouseleave',()=>{ dot.style.transform='translate(-50%,-50%) scale(1)'; ring.style.transform='translate(-50%,-50%) scale(1)'; dot.style.background='var(--cyan)'; });
+});
+
+/* ===== SCROLL PROGRESS ===== */
+window.addEventListener('scroll',()=>{
+  const p = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  document.getElementById('scroll-progress').style.width = p+'%';
+});
+
+/* ===== NAVBAR SCROLL ===== */
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+/* ===== SECTION DOTS ===== */
+const sections = ['hero','courses','learn','robot-dance','ai-for-all','certification'];
+const dots = document.querySelectorAll('.dot');
+const navLinks = document.querySelectorAll('.nav-links a');
+dots.forEach((d,i) => d.addEventListener('click',()=>{ document.getElementById(sections[i]).scrollIntoView({behavior:'smooth'}); }));
+
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const idx = sections.indexOf(e.target.id);
+      if(idx>=0){
+        dots.forEach(d=>d.classList.remove('active'));
+        dots[idx]?.classList.add('active');
+        navLinks.forEach(a=>a.classList.remove('active'));
+        navLinks[idx]?.classList.add('active');
+      }
+    }
+  });
+},{threshold:0.4});
+sections.forEach(s=>{ const el=document.getElementById(s); if(el) io.observe(el); });
+
+/* ===== SCROLL REVEAL ===== */
+const revealIO = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting) e.target.classList.add('visible');
+  });
+},{threshold:0.1, rootMargin:'0px 0px -60px 0px'});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el=>revealIO.observe(el));
+
+/* ===== COUNTER ANIMATION ===== */
+function animateCounter(el, target, suffix=''){
+  let current = 0;
+  const step = target / 60;
+  const timer = setInterval(()=>{
+    current += step;
+    if(current >= target){ current = target; clearInterval(timer); }
+    el.textContent = Math.round(current).toLocaleString() + suffix;
+  }, 25);
+}
+const counterIO = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('[data-count]').forEach(el=>{
+        animateCounter(el, parseInt(el.dataset.count), el.dataset.suffix||'');
+        el.removeAttribute('data-count');
+      });
+      counterIO.unobserve(e.target);
+    }
+  });
+},{threshold:0.4});
+document.querySelectorAll('#hero .hero-stats, #ai-for-all .counter-grid').forEach(el=>counterIO.observe(el));
+
+/* ===== LESSONS ===== */
+const lessons = [
+  {
+    title: '🧠 What is AI?',
+    body: `Artificial Intelligence — or AI — is when computers are taught to think and learn like humans! 🤯<br/><br/>
+Just like how you learn to recognise a cat 🐱 by seeing many cats, AI learns by looking at thousands and thousands of examples.<br/><br/>
+AI is already all around you — in your phone's face unlock, YouTube recommendations, and even Nepali hospitals! 🏥<br/><br/>
+<strong style="color:var(--cyan)">Fun Fact:</strong> "Artificial" means made by humans, "Intelligence" means ability to learn. Together = AI! 🚀`,
+    quiz: 'Quick Quiz 🎯 — What does AI stand for?',
+    options: [
+      {text:'🤔 Automatic Internet', correct:false},
+      {text:'✅ Artificial Intelligence', correct:true},
+      {text:'🤷 Amazing Invention', correct:false},
+      {text:'💡 Advanced Information', correct:false},
+    ]
+  },
+  {
+    title: '🤖 How Robots Learn',
+    body: `Robots learn using something called <strong style="color:var(--purple)">Machine Learning!</strong> 🤯<br/><br/>
+Imagine showing a robot 1000 pictures of dogs and 1000 pictures of cats. After seeing so many examples, the robot learns to tell them apart on its own! 🐶🐱<br/><br/>
+This is exactly how your phone unlocks when it sees your face — it has "learned" what your face looks like! 📱<br/><br/>
+<strong style="color:var(--mint)">Cool Fact:</strong> A robot can learn to play chess better than any human in just a few hours of practice! ♟️`,
+    quiz: 'Quiz Time! 🎯 — What do robots use to learn from examples?',
+    options: [
+      {text:'📖 Reading books', correct:false},
+      {text:'🤖 Machine Learning', correct:true},
+      {text:'🧪 Chemistry', correct:false},
+      {text:'🎮 Playing games', correct:false},
+    ]
+  },
+  {
+    title: '🌾 AI for Nepali Farmers',
+    body: `Did you know AI is already helping <strong style="color:var(--yellow)">Nepali farmers</strong>? 🇳🇵🌾<br/><br/>
+AI apps can look at photos of rice or wheat plants and tell farmers if their crops are sick — before the farmer even notices! 🔬<br/><br/>
+AI weather predictions help farmers know the best time to plant and harvest, saving water and money. 💧💰<br/><br/>
+<strong style="color:var(--coral)">Nepal Fact:</strong> Over 65% of Nepali people work in farming. AI can help double their earnings! 📈`,
+    quiz: 'Quick Quiz! 🌾 — How can AI help Nepali farmers?',
+    options: [
+      {text:'🌧️ Make it rain', correct:false},
+      {text:'🌱 Detect sick crops early', correct:true},
+      {text:'🚜 Drive tractors', correct:false},
+      {text:'🌞 Control the sun', correct:false},
+    ]
+  },
+  {
+    title: '🎨 Create with AI',
+    body: `AI can now help you <strong style="color:var(--mint)">create amazing things!</strong> 🎨<br/><br/>
+You can tell an AI "draw a dragon flying over Mount Everest 🐉🏔️" and it will create the picture in seconds!<br/><br/>
+AI can write stories, compose music, translate languages, and even solve maths problems — all from your instructions! ✍️🎵🔢<br/><br/>
+<strong style="color:var(--yellow)">Your Power:</strong> The better you explain your idea to an AI, the better result you get. This skill is called <em>Prompt Engineering!</em> 🚀`,
+    quiz: 'Fun Question! 🎨 — What is "Prompt Engineering"?',
+    options: [
+      {text:'🔧 Building robots', correct:false},
+      {text:'✍️ Writing good instructions for AI', correct:true},
+      {text:'🎨 Drawing with computers', correct:false},
+      {text:'📐 Geometry homework', correct:false},
+    ]
+  },
+];
+
+function loadLesson(idx){
+  document.querySelectorAll('.module-item').forEach((el,i)=>el.classList.toggle('active',i===idx));
+  const l = lessons[idx];
+  document.getElementById('lesson-title').textContent = l.title;
+  document.getElementById('lesson-body').innerHTML  = l.body;
+  const qEl = document.getElementById('lesson-quiz');
+  qEl.innerHTML = `<div class="quiz-q">${l.quiz}</div><div class="quiz-options" id="quiz-options"></div>`;
+  const opts = document.getElementById('quiz-options');
+  l.options.forEach(o=>{
+    const d = document.createElement('div');
+    d.className = 'quiz-opt';
+    d.textContent = o.text;
+    d.onclick = function(){ checkAnswer(this, o.correct); };
+    opts.appendChild(d);
+  });
+}
+
+function checkAnswer(el, correct){
+  document.querySelectorAll('.quiz-opt').forEach(o=>{ o.onclick=null; o.style.pointerEvents='none'; });
+  if(correct){
+    el.classList.add('correct');
+    showToast('🎉 Correct! Amazing work!');
+  } else {
+    el.classList.add('wrong');
+    document.querySelectorAll('.quiz-opt').forEach(o=>{ if(o.textContent.includes('✅')) o.classList.add('correct'); });
+    showToast('😊 Not quite — check the green answer!');
+  }
+}
+
+/* ===== ROBOT DANCE ===== */
+let isDancing = false;
+let colorIdx  = 0;
+const roboColors = ['#00d4ff','#a855f7','#ffd60a','#ff6b6b','#00ffaa','#3b82f6'];
+const notes = ['🎵','🎶','🎸','🎹','🥁','🎺'];
+
+function toggleDance(){
+  isDancing = !isDancing;
+  document.getElementById('robo-stage').classList.toggle('dancing', isDancing);
+  if(isDancing){
+    spawnNotes(); spawnDiscoLights();
+    showToast('🕺 ROBO is dancing! Woohoo!');
+    setInterval(()=>{ if(isDancing){ spawnNotes(); spawnDiscoLights(); } }, 1200);
+  } else {
+    showToast('😴 ROBO takes a rest...');
+  }
+}
+
+function spawnNotes(){
+  const stage = document.getElementById('robo-stage');
+  const n = document.createElement('div');
+  n.className = 'music-note';
+  n.textContent = notes[Math.floor(Math.random()*notes.length)];
+  n.style.left = (30+Math.random()*240)+'px';
+  n.style.top  = (50+Math.random()*100)+'px';
+  n.style.animationDuration = (1+Math.random())+'s';
+  stage.appendChild(n);
+  setTimeout(()=>n.remove(), 2000);
+}
+
+function spawnDiscoLights(){
+  const disco = document.getElementById('disco-lights');
+  const colors = ['#00d4ff','#a855f7','#ffd60a','#ff6b6b','#00ffaa'];
+  for(let i=0;i<4;i++){
+    const d = document.createElement('div');
+    d.className = 'disco-light';
+    d.style.background = colors[Math.floor(Math.random()*colors.length)];
+    d.style.left = (Math.random()*280)+'px';
+    d.style.top  = (Math.random()*320)+'px';
+    d.style.animationDelay = (i*0.1)+'s';
+    disco.appendChild(d);
+    setTimeout(()=>d.remove(), 1000);
+  }
+}
+
+function changeColor(){
+  colorIdx = (colorIdx+1) % roboColors.length;
+  const c = roboColors[colorIdx];
+  document.getElementById('eye-l').setAttribute('fill',c);
+  document.getElementById('eye-r').setAttribute('fill',c);
+  document.getElementById('chest-bar').setAttribute('fill',c);
+  document.getElementById('mouth-1').setAttribute('fill',c);
+  document.getElementById('mouth-3').setAttribute('fill',c);
+  spawnDiscoLights();
+  showToast('🌈 ROBO changed color!');
+}
+
+function doWave(){
+  const armR = document.getElementById('robo-arm-right');
+  armR.style.animation = 'arm-wave-right 0.3s ease-in-out 4';
+  setTimeout(()=>{ armR.style.animation=''; }, 1400);
+  showToast('👋 ROBO says Hi!');
+}
+
+function doSpin(){
+  const head = document.getElementById('robo-head-group');
+  head.style.animation = 'spin-head 0.6s linear 2';
+  setTimeout(()=>{ head.style.animation=''; }, 1400);
+  showToast('💫 Wheeeee!');
+}
+
+/* ===== ROBOT EYE TRACKING ===== */
+document.addEventListener('mousemove', e=>{
+  const stage = document.getElementById('robo-stage');
+  if(!stage) return;
+  const r = stage.getBoundingClientRect();
+  const cx = r.left + r.width/2;
+  const cy = r.top  + r.height/2;
+  const angle = Math.atan2(e.clientY - cy, e.clientX - cx);
+  const dist  = Math.min(4, Math.hypot(e.clientX-cx, e.clientY-cy)*0.015);
+  const ox = Math.cos(angle)*dist;
+  const oy = Math.sin(angle)*dist;
+  ['eye-l','eye-r'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.setAttribute('transform',`translate(${ox},${oy})`);
+  });
+  // Eyebrow react
+  if(e.clientY < cy){
+    document.getElementById('brow-l')?.setAttribute('transform','rotate(-8,135,88)');
+    document.getElementById('brow-r')?.setAttribute('transform','rotate(8,205,88)');
+  } else {
+    document.getElementById('brow-l')?.setAttribute('transform','');
+    document.getElementById('brow-r')?.setAttribute('transform','');
+  }
+});
+
+/* ===== TOAST ===== */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+/* ===== SCHOOL DOTS ANIMATION ===== */
+const schoolDotsIO = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const dots = e.target.querySelectorAll('.school-dot');
+      dots.forEach((d,i)=>{
+        setTimeout(()=>{ d.style.opacity='1'; d.style.transform='scale(1)'; }, i*80);
+      });
+      schoolDotsIO.unobserve(e.target);
+    }
+  });
+},{threshold:0.3});
+const sd = document.getElementById('school-dots');
+if(sd){
+  sd.querySelectorAll('.school-dot').forEach(d=>{ d.style.opacity='0'; d.style.transform='scale(0.5)'; d.style.transition='all 0.4s cubic-bezier(0.22,1,0.36,1)'; });
+  schoolDotsIO.observe(sd);
+}
+
+/* ===== CHEST LIGHT BLINK ===== */
+setInterval(()=>{
+  const lights = ['chest-light-1','chest-light-2','chest-light-3'];
+  const l = document.getElementById(lights[Math.floor(Math.random()*lights.length)]);
+  if(l){
+    const orig = l.getAttribute('fill');
+    l.setAttribute('fill','white');
+    setTimeout(()=>l.setAttribute('fill',orig), 180);
+  }
+}, 800);
+
+/* ===== ANTENNA PULSE ===== */
+setInterval(()=>{
+  const a = document.getElementById('antenna-dot');
+  if(a){
+    a.setAttribute('fill','#ffd60a');
+    setTimeout(()=>a.setAttribute('fill','white'), 300);
+  }
+}, 1200);
+
+/* ===== FLOATING PARTICLES ON HERO CLICK ===== */
+document.getElementById('hero-robot')?.addEventListener('click',()=>{
+  showToast('👋 Hi! I am ROBO! Your AI Friend!');
+});
+
+console.log('%c🤖 EIFE By Rawthink', 'font-family:monospace;font-size:2rem;color:#00d4ff;font-weight:bold');
+console.log('%cBuilt for Nepali students! 🇳🇵', 'font-family:monospace;font-size:1rem;color:#00ffaa');
+</script>
+</body>
+</html>
