@@ -10,28 +10,29 @@
   <style>
     /* ===== CSS VARIABLES & RESET ===== */
     :root {
-      --bg:        #f6f1eb;
-      --bg2:       #efe5da;
-      --cyan:      #2f7f7f;
-      --mint:      #7ebfa5;
-      --yellow:    #c0904f;
-      --coral:     #d16d72;
-      --purple:    #7a5d9c;
-      --blue:      #4a7fad;
-      --card-bg:   rgba(255,255,255,0.95);
-      --card-border: rgba(79,89,104,0.12);
-      --text:      #2c2720;
-      --text-dim:  #736c64;
+      /* Darker, high-contrast palette for readability */
+      --bg:        #081426; /* deep navy */
+      --bg2:       #0d2338; /* navy-blue */
+      --cyan:      #00A3E0; /* bright sky blue */
+      --mint:      #00C2A8; /* minty green */
+      --yellow:    #FFD166; /* warm yellow */
+      --coral:     #FF6B6B; /* playful coral */
+      --purple:    #8E6FF0; /* soft violet */
+      --blue:      #4A90E2; /* friendly blue */
+      --card-bg:   rgba(255,255,255,0.03); /* subtle translucent on dark */
+      --card-border: rgba(255,255,255,0.06);
+      --text:      #e6f3ff; /* light text for contrast */
+      --text-dim:  #9fb5c8; /* dim light text */
       --radius:    22px;
-      --glow-cyan: 0 0 20px rgba(47,127,127,0.2);
-      --glow-mint: 0 0 20px rgba(126,191,165,0.2);
-      --glow-yellow: 0 0 20px rgba(192,144,79,0.2);
+      --glow-cyan: 0 0 26px rgba(0,163,224,0.18);
+      --glow-mint: 0 0 22px rgba(0,194,168,0.12);
+      --glow-yellow: 0 0 22px rgba(255,209,102,0.12);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
       font-family: 'Nunito', sans-serif;
-      background: radial-gradient(circle at top left, rgba(255,255,255,0.9), rgba(246,241,235,1) 35%);
+      background: linear-gradient(135deg, rgba(12,36,64,0.7), rgba(64,16,80,0.65)), radial-gradient(circle at top left, rgba(20,40,70,0.8), rgba(10,18,30,1) 35%);
       color: var(--text);
       overflow-x: hidden;
       cursor: none;
@@ -81,12 +82,12 @@
       position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
       display: flex; align-items: center; justify-content: space-between;
       padding: 14px 40px;
-      background: rgba(255,255,255,0.92);
+      background: rgba(6,12,26,0.6);
       backdrop-filter: blur(22px);
       border-bottom: 1px solid rgba(79,89,104,0.12);
       transition: all 0.3s;
     }
-    nav.scrolled { padding: 10px 40px; background: rgba(5,11,24,0.92); }
+    nav.scrolled { padding: 10px 40px; background: rgba(3,8,18,0.85); }
     .nav-logo {
       font-family: 'Fredoka One', cursive;
       font-size: 1.6rem;
@@ -231,7 +232,8 @@
     ============================================================ */
     #hero {
       text-align: center;
-      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(74,127,173,0.12) 0%, transparent 60%);
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(74,144,226,0.08) 0%, transparent 60%);
+      backdrop-filter: saturate(120%);
     }
     #hero .blob1 { width: 500px; height: 500px; background: var(--cyan); top: -100px; left: -150px; }
     #hero .blob2 { width: 400px; height: 400px; background: var(--purple); bottom: -50px; right: -100px; }
@@ -277,6 +279,22 @@
       margin: 0 auto 30px;
       animation: float 3s ease-in-out infinite;
     }
+
+    /* Simple continuous wave for the right hand */
+    @keyframes wave-hand {
+      0% { transform: rotate(8deg); }
+      25% { transform: rotate(-8deg); }
+      50% { transform: rotate(12deg); }
+      75% { transform: rotate(-6deg); }
+      100% { transform: rotate(8deg); }
+    }
+    .hero-robot-wrap svg g#hero-arm-left,
+    .hero-robot-wrap svg g#hero-arm-right { transform-box: fill-box; }
+    /* Pivot the right arm at its shoulder (left edge of the arm group) so it only rotates in place */
+    .hero-robot-wrap svg g#hero-arm-right {
+      transform-origin: 0% 50%;
+      animation: wave-hand 1.2s ease-in-out infinite;
+    }
     @keyframes float {
       0%,100% { transform: translateY(0px) rotate(-2deg); }
       50%      { transform: translateY(-18px) rotate(2deg); }
@@ -291,7 +309,7 @@
        SECTION 2 — COURSE DETAILS
     ============================================================ */
     #courses {
-      background: radial-gradient(ellipse 70% 50% at 50% 100%, rgba(168,85,247,0.07) 0%, transparent 70%);
+      background: radial-gradient(ellipse 70% 50% at 50% 100%, rgba(142,111,240,0.06) 0%, transparent 70%);
     }
     .courses-header { text-align: center; max-width: 700px; margin: 0 auto 60px; }
     .section-title {
@@ -341,7 +359,7 @@
        SECTION 3 — LEARN FROM HERE
     ============================================================ */
     #learn {
-      background: radial-gradient(ellipse 70% 50% at 0% 50%, rgba(0,255,170,0.06) 0%, transparent 70%);
+      background: radial-gradient(ellipse 70% 50% at 0% 50%, rgba(0,194,168,0.06) 0%, transparent 70%);
     }
     .learn-wrapper {
       display: grid; grid-template-columns: 1fr 1fr;
@@ -399,7 +417,7 @@
        SECTION 4 — ROBOT DANCE
     ============================================================ */
     #robot-dance {
-      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(255,214,10,0.05) 0%, transparent 70%);
+      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(255,209,102,0.06) 0%, transparent 70%);
       text-align: center;
     }
     .dance-title { font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 10px; }
@@ -536,7 +554,7 @@
        SECTION 6 — CERTIFICATION
     ============================================================ */
     #certification {
-      background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(168,85,247,0.08) 0%, transparent 70%);
+      background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(142,111,240,0.08) 0%, transparent 70%);
       text-align: center; padding-bottom: 100px;
     }
     .cert-header { max-width: 680px; margin: 0 auto 50px; }
@@ -598,15 +616,29 @@
     }
     .cert-card {
       width: calc(100% - 48px); aspect-ratio: 1.5;
-      position: absolute; left: 50%; top: 44px;
-      transform: translateX(-50%) translateY(40px) scale(0.98);
+      position: relative; margin: 0 auto; left: auto; top: auto;
+      transform: translateY(60px) scale(0.98);
       opacity: 0;
-      transition: transform 0.7s ease, opacity 0.6s ease;
+      transition: transform 0.85s cubic-bezier(0.22,1,0.36,1), opacity 0.7s ease, box-shadow 0.45s ease;
       border-radius: 24px;
+      box-shadow: 0 30px 80px rgba(122,93,156,0.18), 0 0 20px rgba(74,127,173,0.15), inset 0 0 20px rgba(122,93,156,0.08);
+      will-change: transform, opacity;
     }
-    .cert-envelope.open .cert-card {
-      transform: translateX(-50%) translateY(0) scale(1);
+    .cert-envelope.open .cert-card,
+    .cert-envelope.revealed .cert-card,
+    .cert-card.revealed {
+      transform: translateY(0) scale(1);
       opacity: 1;
+      box-shadow: 0 46px 120px rgba(255,183,61,0.28), 0 0 38px rgba(255,214,117,0.22), inset 0 0 30px rgba(255,225,160,0.16);
+    }
+    .cert-envelope.open .envelope-body,
+    .cert-envelope.revealed .envelope-body {
+      transform: translateX(-50%) translateY(20px);
+    }
+    .cert-envelope.open .envelope-flap,
+    .cert-envelope.revealed .envelope-flap {
+      transform: translateX(-50%) rotateX(-180deg);
+      box-shadow: 0 20px 40px rgba(79,89,104,0.12);
     }
     .cert-envelope:hover .cert-card {
       transform: translateX(-50%) translateY(-2px) rotateY(4deg) scale(1.01);
@@ -615,51 +647,69 @@
       backface-visibility: hidden;
       border-radius: 24px; overflow: hidden;
       width: 100%; height: 100%;
-      background: linear-gradient(135deg, #faf6f0 0%, #f5ede5 45%, #f0e6dc 100%);
-      border: 3px solid rgba(122,93,156,0.4);
-      box-shadow: 0 30px 80px rgba(122,93,156,0.18), 0 0 20px rgba(74,127,173,0.15), inset 0 0 20px rgba(122,93,156,0.08);
+      background: linear-gradient(135deg, rgba(255,250,235,0.9), rgba(255,248,226,0.8));
+      border: 1px solid rgba(255,224,130,0.35);
+      backdrop-filter: blur(8px) saturate(120%);
+      box-shadow: 0 30px 80px rgba(255,193,72,0.15), 0 0 26px rgba(255,216,117,0.12), inset 0 0 18px rgba(255,255,255,0.18);
       padding: 36px 40px;
       display: flex; flex-direction: column; justify-content: space-between;
       position: relative; overflow: hidden;
+      color: #4f3a1f;
     }
     .cert-front::before {
       content: ''; position: absolute; inset: 0;
       background: url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='1' fill='rgba(139,69,19,0.08)'/%3E%3C/svg%3E");
       opacity: 0.6;
     }
+    .cert-front::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(255,222,115,0.18), transparent 24%),
+                  radial-gradient(circle at 80% 80%, rgba(255,190,90,0.12), transparent 20%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.45s ease;
+    }
+    .cert-card.revealed .cert-front::after {
+      opacity: 1;
+      animation: cert-glow 3s ease-in-out infinite alternate;
+    }
+    @keyframes cert-glow {
+      from { transform: scale(0.98); opacity: 0.85; }
+      to { transform: scale(1.02); opacity: 1; }
+    }
     .cert-corner-glow {
       position: absolute; border-radius: 50%; filter: blur(50px);
     }
-    .cert-corner-glow.tl { width: 200px; height: 200px; background: rgba(160,82,45,0.35); top: -60px; left: -60px; }
-    .cert-corner-glow.br { width: 200px; height: 200px; background: rgba(210,105,30,0.25); bottom: -60px; right: -60px; }
+    .cert-corner-glow.tl { width: 200px; height: 200px; background: rgba(255,215,0,0.32); top: -60px; left: -60px; }
+    .cert-corner-glow.br { width: 200px; height: 200px; background: rgba(255,197,75,0.28); bottom: -60px; right: -60px; }
     .cert-logo-row { display: flex; align-items: center; gap: 12px; position: relative; z-index: 1; }
     .cert-logo-icon { font-size: 2rem; }
-    .cert-logo-text { font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--purple); font-weight: 900; }
+    .cert-logo-text { font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: #b97517; font-weight: 900; }
     .cert-badge { position: absolute; top: 24px; right: 30px; z-index: 1; }
     .cert-badge-circle {
       width: 60px; height: 60px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--purple), var(--blue));
+      background: linear-gradient(135deg, #ffe375, #f0b22c);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      box-shadow: 0 4px 20px rgba(74,127,173,0.35), 0 0 15px rgba(122,93,156,0.25);
-      font-size: 0.5rem; font-weight: 900; color: #faf6f0; line-height: 1.2; text-align: center;
+      box-shadow: 0 4px 20px rgba(255,206,110,0.4), 0 0 18px rgba(255,190,70,0.28);
+      font-size: 0.5rem; font-weight: 900; color: #3e2a0d; line-height: 1.2; text-align: center;
       text-transform: uppercase; letter-spacing: 0.5px;
     }
     .cert-center { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 12px 0; }
-    .cert-presents { font-size: 0.75rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--purple); margin-bottom: 6px; font-weight: 700; }
+    .cert-presents { font-size: 0.75rem; letter-spacing: 2.5px; text-transform: uppercase; color: #b67416; margin-bottom: 6px; font-weight: 900; }
     .cert-name-line {
       font-family: 'Fredoka One', cursive;
       font-size: clamp(1.2rem, 3vw, 1.8rem);
-      background: linear-gradient(135deg, var(--blue), var(--purple));
+      background: linear-gradient(135deg, #4f7af2, #e3a83e);
       background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       margin-bottom: 10px;
     }
-    .cert-course { font-size: 0.85rem; color: var(--blue); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .cert-course { font-size: 0.85rem; color: #a26d15; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
     .cert-bottom { display: flex; justify-content: space-between; align-items: flex-end; position: relative; z-index: 1; gap: 20px; }
     .cert-sig { text-align: left; }
     .cert-sig:last-of-type { text-align: right; }
     .cert-sig-line { width: 100px; height: 2px; background: var(--purple); margin-bottom: 4px; }
     .cert-sig:last-of-type .cert-sig-line { margin-left: auto; }
-    .cert-sig-label { font-size: 0.72rem; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; font-weight: 700; }
+    .cert-sig-label { font-size: 0.72rem; color: #5b4022; letter-spacing: 1px; text-transform: uppercase; font-weight: 800; }
     .cert-seal { font-size: 2.5rem; }
     .cert-border-decoration {
       position: absolute; inset: 6px; border: 2px solid rgba(122,93,156,0.25);
@@ -668,9 +718,10 @@
     .cert-ribbon {
       position: absolute; top: 0; left: 30px;
       width: 40px; height: 50px;
-      background: linear-gradient(135deg, var(--purple), var(--blue));
+      background: linear-gradient(135deg, #ffd961, #f7b929);
       clip-path: polygon(0 0, 100% 0, 100% 80%, 50% 100%, 0 80%);
       z-index: 2;
+      box-shadow: 0 10px 24px rgba(255,200,75,0.25);
     }
     .cert-ribbon::after { content: '★'; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: #faf6f0; font-size: 1rem; }
 
@@ -820,6 +871,15 @@
       section { padding: 80px 20px 50px; }
       #section-dots { right: 12px; }
     }
+    @media (max-width: 900px) {
+      /* smaller screens: pop the cert out less distance so it fits */
+      .cert-envelope.open .cert-card,
+      .cert-envelope.revealed .cert-card,
+      .cert-card.revealed {
+        transform: translateY(0) scale(1);
+      }
+    }
+    
   </style>
 </head>
 <body>
@@ -900,11 +960,15 @@
       <rect x="89" y="92" width="12" height="5" rx="2.5" fill="#00d4ff"/>
       <rect x="104" y="92" width="12" height="5" rx="2.5" fill="#00ffaa"/>
       <rect x="119" y="92" width="12" height="5" rx="2.5" fill="#ffd60a"/>
-      <!-- Arms -->
-      <rect x="20" y="108" width="36" height="16" rx="8" fill="#0f2040" stroke="#00d4ff" stroke-width="1.5"/>
-      <circle cx="20" cy="116" r="8" fill="#0f2040" stroke="#00d4ff" stroke-width="1.5"/>
-      <rect x="164" y="108" width="36" height="16" rx="8" fill="#0f2040" stroke="#00d4ff" stroke-width="1.5"/>
-      <circle cx="200" cy="116" r="8" fill="#0f2040" stroke="#00d4ff" stroke-width="1.5"/>
+      <!-- Arms (wrapped for animation) -->
+      <g id="hero-arm-left">
+        <rect x="20" y="108" width="36" height="16" rx="8" fill="#0f2040" stroke="#00d4ff" stroke-width="1.5"/>
+        <circle cx="20" cy="116" r="8" fill="#0f2040" stroke="#00d4ff" stroke-width="1.5"/>
+      </g>
+      <g id="hero-arm-right">
+        <rect x="164" y="108" width="36" height="16" rx="8" fill="#0f2040" stroke="#00d4ff" stroke-width="1.5"/>
+        <circle cx="200" cy="116" r="8" fill="#0f2040" stroke="#00d4ff" stroke-width="1.5"/>
+      </g>
       <!-- Legs -->
       <rect x="73" y="178" width="26" height="36" rx="10" fill="#0c1a34" stroke="#00d4ff" stroke-width="1.5"/>
       <rect x="121" y="178" width="26" height="36" rx="10" fill="#0c1a34" stroke="#00d4ff" stroke-width="1.5"/>
@@ -1304,13 +1368,11 @@
     </p>
   </div>
 
-  <!-- 3D Certificate Envelope Reveal -->
+  <!-- Certificate only (no envelope, no quiz/leaderboard) -->
   <div class="cert-envelope-wrap reveal-scale" data-delay="3">
-    <div class="cert-envelope" id="cert-envelope" onclick="toggleCertificate()" role="button" aria-label="Open certificate envelope">
-      <div class="envelope-back"></div>
-      <div class="envelope-flap"></div>
-      <div class="envelope-body">
-        <div class="cert-card">
+    <div style="display:flex;justify-content:center;">
+      <div class="cert-card-wrap" style="max-width:760px;width:100%;display:flex;justify-content:center;">
+        <div class="cert-card" id="cert-card">
           <div class="cert-front">
             <div class="cert-corner-glow tl"></div>
             <div class="cert-corner-glow br"></div>
@@ -1329,9 +1391,9 @@
 
             <div class="cert-center">
               <div class="cert-presents">This certifies that</div>
-              <div class="cert-name-line">[Your Name]</div>
-              <div style="font-size:0.8rem;color:#5a3a1f;margin-top:8px">
-                has successfully completed the <strong style="font-weight: 800; color: #7a5d9c;">EIFE By Rawthink curriculum</strong><br/>and demonstrated outstanding curiosity in Artificial Intelligence.
+              <div class="cert-name-line" id="cert-name">[Your Name]</div>
+              <div style="font-size:0.86rem;color:#4f3a1f;margin-top:8px;font-weight:700;line-height:1.55;">
+                has successfully completed the <strong style="font-weight: 900; color: #a06a14;">EIFE By Rawthink curriculum</strong><br/>and demonstrated outstanding curiosity in Artificial Intelligence.
               </div>
               <div class="cert-course">🏅 AI Explorer Program Grades 5-8</div>
             </div>
@@ -1356,7 +1418,7 @@
     </div>
   </div>
   <p style="font-size:0.82rem;color:var(--text-dim);margin-top:-20px;margin-bottom:50px" class="reveal">
-    👆 Tap the envelope to reveal your certificate with a soft pop!
+    Scroll to reveal the certificate.
   </p>
 
   <!-- How to get certified -->
@@ -1467,7 +1529,7 @@ document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
   ring.style.left = rx+'px'; ring.style.top = ry+'px';
   requestAnimationFrame(loop);
 })();
-document.querySelectorAll('a,button,.btn,.card,.course-card,.module-item,.quiz-opt,.dot,.cert-envelope').forEach(el=>{
+document.querySelectorAll('a,button,.btn,.card,.course-card,.module-item,.quiz-opt,.dot,.cert-card').forEach(el=>{
   el.addEventListener('mouseenter',()=>{ dot.style.transform='translate(-50%,-50%) scale(2)'; ring.style.transform='translate(-50%,-50%) scale(1.5)'; dot.style.background='var(--yellow)'; });
   el.addEventListener('mouseleave',()=>{ dot.style.transform='translate(-50%,-50%) scale(1)'; ring.style.transform='translate(-50%,-50%) scale(1)'; dot.style.background='var(--cyan)'; });
 });
@@ -1512,10 +1574,81 @@ const revealIO = new IntersectionObserver(entries=>{
 },{threshold:0.1, rootMargin:'0px 0px -60px 0px'});
 document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el=>revealIO.observe(el));
 
-function toggleCertificate(){
-  const env = document.getElementById('cert-envelope');
-  if(!env) return;
-  env.classList.toggle('open');
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+function ensureAudioReady(){
+  if(audioContext.state === 'suspended'){
+    audioContext.resume().catch(()=>{});
+  }
+}
+
+document.body.addEventListener('pointerdown', ensureAudioReady, { once: true });
+
+function playEnvelopeSound(type = 'open'){
+  ensureAudioReady();
+  if(!audioContext) return;
+  const now = audioContext.currentTime;
+  const osc = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+  osc.type = 'triangle';
+  osc.frequency.value = type === 'open' ? 460 : 340;
+  gain.gain.value = type === 'open' ? 0.13 : 0.08;
+  gain.gain.setValueAtTime(gain.gain.value, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+  osc.connect(gain);
+  gain.connect(audioContext.destination);
+  osc.start(now);
+  osc.stop(now + 0.28);
+}
+
+function playCertificateChime(){
+  ensureAudioReady();
+  if(!audioContext) return;
+  const now = audioContext.currentTime;
+  const master = audioContext.createGain();
+  master.gain.setValueAtTime(0.16, now);
+  master.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+  master.connect(audioContext.destination);
+
+  const tones = [520, 680, 840];
+  tones.forEach((freq, idx) => {
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    osc.type = idx === 0 ? 'triangle' : 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.08, now + idx * 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.9 + idx * 0.05);
+    osc.connect(gain);
+    gain.connect(master);
+    osc.start(now + idx * 0.04);
+    osc.stop(now + 0.9 + idx * 0.05);
+  });
+}
+
+function setCertificateOpen(open){
+  const card = document.getElementById('cert-card');
+  if(!card) return;
+  const wasOpen = card.classList.contains('revealed');
+  if(open === wasOpen) return;
+  card.classList.toggle('revealed', !!open);
+  if(open){
+    playEnvelopeSound('open');
+    playCertificateChime();
+  } else {
+    playEnvelopeSound('close');
+  }
+  showToast(open ? '✨ Certificate slides out!' : '📭 Certificate slides back in.');
+}
+
+// Observe the certification section and open/close the envelope when it enters/exits viewport
+const certObserver = new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    setCertificateOpen(entry.isIntersecting);
+  });
+},{threshold:0.45});
+
+const certSection = document.getElementById('certification');
+if(certSection){
+  certObserver.observe(certSection);
 }
 
 /* ===== COUNTER ANIMATION ===== */
@@ -1883,6 +2016,8 @@ window.addEventListener('load', ()=>{
       initGame();
     }
   }, 500);
+
+  // Simple wave handled purely by CSS on the right arm; no JS needed here.
 });
 
 console.log('%c🤖 EIFE By Rawthink', 'font-family:monospace;font-size:2rem;color:#00d4ff;font-weight:bold');
